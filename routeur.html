@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration du Routeur Cisco 1900 Series</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .command {
+            color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Configuration du Routeur Cisco 1900 Series</h1>
+        <h2>Connexion au Routeur</h2>
+        <p>Pour se connecter au routeur, suivez ces étapes similaires à la connexion au switch :</p>
+        <ol>
+            <li>
+                <strong>Connexion au terminal :</strong>
+                <pre class="command">sudo minicom -s</pre>
+            </li>
+            <li>
+                <strong>Configurer le port série :</strong>
+                <ul>
+                    <li>Choisissez "configuration du port série".</li>
+                    <li>Assurez-vous que le port série correspond au bon port, ici <code>ttyUSB0</code>.</li>
+                    <li>Configurez la vitesse à 9600 bauds.</li>
+                    <li>Désactivez le contrôle du flux matériel.</li>
+                    <li>Enregistrez et quittez le panneau de configuration.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Accéder à la CLI du routeur :</strong>
+                <pre class="command">sudo minicom</pre>
+            </li>
+        </ol>
+
+        <h2>Configuration de Base du Routeur</h2>
+        <h3>Accéder au mode configuration globale</h3>
+        <pre class="command">
+enable
+configure terminal
+        </pre>
+
+        <h3>Configurer le nom du routeur</h3>
+        <pre class="command">hostname [nom_du_routeur]</pre>
+
+        <h3>Configurer un mot de passe pour accéder au mode privilégié</h3>
+        <pre class="command">enable password [mot_de_passe]</pre>
+
+        <h3>Configurer un mot de passe pour la console</h3>
+        <pre class="command">
+line console 0
+password [mot_de_passe]
+login
+exit
+        </pre>
+
+        <h3>Configurer un mot de passe pour les lignes VTY (telnet/SSH)</h3>
+        <pre class="command">
+line vty 0 4
+password [mot_de_passe]
+login
+exit
+        </pre>
+
+        <h3>Configurer l'accès SSH</h3>
+        <pre class="command">
+ip domain-name [domaine]
+crypto key generate rsa
+ip ssh version 2
+line vty 0 4
+transport input ssh
+exit
+        </pre>
+
+        <h2>Configuration des Interfaces</h2>
+        <h3>Configurer une interface Ethernet</h3>
+        <pre class="command">
+interface GigabitEthernet 0/0
+description [description]
+ip address [adresse_ip] [masque_de_sous_réseau]
+no shutdown
+exit
+        </pre>
+
+        <h3>Configurer une interface série (pour les liaisons WAN)</h3>
+        <pre class="command">
+interface Serial 0/0/0
+ip address [adresse_ip] [masque_de_sous_réseau]
+clock rate [valeur] (si DCE)
+no shutdown
+exit
+        </pre>
+
+        <h2>Configuration des Protocoles de Routage</h2>
+        <h3>Configurer le routage statique</h3>
+        <pre class="command">ip route [réseau_destination] [masque_sous_réseau] [adresse_ip_saut_suivant]</pre>
+
+        <h3>Configurer le protocole de routage RIP</h3>
+        <pre class="command">
+router rip
+version 2
+network [réseau]
+no auto-summary
+exit
+        </pre>
+
+        <h3>Configurer le protocole de routage OSPF</h3>
+        <pre class="command">
+router ospf [process_id]
+network [réseau] [wildcard_mask] area [numéro_zone]
+exit
+        </pre>
+
+        <h3>Configurer le protocole de routage EIGRP</h3>
+        <pre class="command">
+router eigrp [numéro_autonome]
+network [réseau] [wildcard_mask]
+exit
+        </pre>
+
+        <h2>Sécurité</h2>
+        <h3>Configurer les listes de contrôle d'accès (ACL)</h3>
+        <pre class="command">access-list [numéro] permit/deny [protocole] [adresse_source] [wildcard_mask] [options]</pre>
+
+        <h3>Appliquer une ACL à une interface</h3>
+        <pre class="command">
+interface GigabitEthernet 0/0
+ip access-group [numéro] in/out
+exit
+        </pre>
+
+        <h3>Configurer un mot de passe secret (crypté)</h3>
+        <pre class="command">enable secret [mot_de_passe]</pre>
+
+        <h2>Gestion et Monitoring</h2>
+        <h3>Configurer SNMP</h3>
+        <pre class="command">snmp-server community [communauté] [droits]</pre>
+
+        <h3>Afficher les interfaces et leur statut</h3>
+        <pre class="command">show ip interface brief</pre>
+
+        <h3>Afficher la table de routage</h3>
+        <pre class="command">show ip route</pre>
+
+        <h3>Afficher la configuration courante</h3>
+        <pre class="command">show running-config</pre>
+
+        <h3>Sauvegarder la configuration courante</h3>
+        <pre class="command">write memory</pre>
+
+        <h3>Recharger le routeur</h3>
+        <pre class="command">reload</pre>
+
+        <h2>Configuration NAT (Network Address Translation)</h2>
+        <h3>Configurer l'interface interne pour NAT</h3>
+        <pre class="command">
+interface GigabitEthernet 0/0
+ip nat inside
+exit
+        </pre>
+
+        <h3>Configurer l'interface externe pour NAT</h3>
+        <pre class="command">
+interface GigabitEthernet 0/1
+ip nat outside
+exit
+        </pre>
+
+        <h3>Configurer une règle NAT statique</h3>
+        <pre class="command">ip nat inside source static [adresse_ip_interne] [adresse_ip_externe]</pre>
+
+        <h3>Configurer une règle NAT dynamique</h3>
+        <pre class="command">
+access-list 1 permit [réseau_interne] [wildcard_mask]
+ip nat pool [nom_pool] [adresse_ip_debut] [adresse_ip_fin] netmask [masque_sous_réseau]
+ip nat inside source list 1 pool [nom_pool]
+        </pre>
+
+        <h2>Configuration DHCP (Dynamic Host Configuration Protocol)</h2>
+        <h3>Configurer un pool DHCP</h3>
+        <pre class="command">
+ip dhcp pool [nom_pool]
+network [réseau] [masque_sous_réseau]
+default-router [routeur_par_défaut]
+dns-server [serveur_dns]
+lease 7
+exit
+        </pre>
+
+        <h3>Vérifier les logs du DHCP sur le routeur</h3>
+        <pre class="command">
+show ip dhcp binding     # vérifier les appareils connectés et leurs IP
+show ip dhcp conflict    # vérifier s'il y a des conflits d'IP
+        </pre>
+
+        <h3>Exclure des adresses IP du pool DHCP</h3>
+        <pre class="command">ip dhcp excluded-address [adresse_ip_debut] [adresse_ip_fin]</pre>
+
+        <h2>Configuration de l'inter-VLAN Routing</h2>
+        <h3>Configurer les VLANs sur le commutateur</h3>
+        <pre class="command">
+Switch> enable 
+Switch# configure terminal 
+
+Switch(config)# vlan 10 
+Switch(config-vlan)# name VLAN10 
+Switch(config-vlan)# exit
+
+Switch(config)# vlan 20 
+Switch(config-vlan)# name VLAN20 
+Switch(config-vlan)# exit
+
+Switch(config)# vlan 30 
+Switch(config-vlan)# name VLAN30 
+Switch(config-vlan)# exit
+        </pre>
+
+        <h3>Assigner les ports aux VLANs</h3>
+        <pre class="command">
+Switch(config)# interface range fastethernet 0/1 - 8 
+Switch(config-if-range)# switchport mode access 
+Switch(config-if-range)# switchport access vlan 10 
+Switch(config-if-range)# exit
+
+Switch(config)# interface range fastethernet 0/9 - 16 
+Switch(config-if-range)# switchport mode access 
+Switch(config-if-range)# switchport access vlan 20 
+Switch(config-if-range)# exit
+
+Switch(config)# interface range fastethernet 0/17 - 24 
+Switch(config-if-range)# switchport mode access 
+Switch(config-if-range)# switchport access vlan 30 
+Switch(config-if-range)# exit
+        </pre>
+
+        <h3>Configurer le port trunk sur le commutateur</h3>
+        <pre class="command">
+Switch(config)# interface gigabitethernet 0/1 
+Switch(config-if)# switchport mode trunk 
+Switch(config-if)# switchport trunk allowed vlan 10,20,30 
+Switch(config-if)# exit
+        </pre>
+
+        <h3>Configurer les sous-interfaces pour chaque VLAN sur le routeur</h3>
+        <pre class="command">
+Router> enable 
+Router# configure terminal 
+
+Router(config)# interface gigabitethernet 0/1 
+Router(config-if)# no shutdown
+
+Router(config)# interface gigabitethernet 0/1.10 
+Router(config-subif)# encapsulation dot1Q 10 
+Router(config-subif)# ip address 192.168.10.1 255.255.255.0 
+Router(config-subif)# exit 
+
+Router(config)# interface gigabitethernet 0/0.20 
+Router(config-subif)# encapsulation dot1Q 20 
+Router(config-subif)# ip address 192.168.20.1 255.255.255.0 
+Router(config-subif)# exit 
+
+Router(config)# interface gigabitethernet 0/1.30 
+Router(config-subif)# encapsulation dot1Q 30 
+Router(config-subif)# ip address 192.168.30.1 255.255.255.0 
+Router(config-subif)# exit
+        </pre>
+
+        <h3>Configurer le DHCP pour chaque VLAN</h3>
+        <pre class="command">
+ip dhcp pool VLAN10
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.1
+dns-server [serveur_dns]
+exit
+
+ip dhcp pool VLAN20
+network 192.168.20.0 255.255.255.0
+default-router 192.168.20.1
+dns-server [serveur_dns]
+exit
+
+ip dhcp pool VLAN30
+network 192.168.30.0 255.255.255.0
+default-router 192.168.30.1
+dns-server [serveur_dns]
+exit
+        </pre>
+    </div>
+</body>
+</html>

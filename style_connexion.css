@@ -1,0 +1,130 @@
+/* Styles pour le corps de la page */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url('image_de_fond.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #333;
+}
+
+/* Styles pour l'en-tête */
+header {
+    background-color: mediumturquoise;
+    padding: 20px;
+    text-align: center;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px; /* Ajuster la hauteur selon la taille de votre logo */
+}
+
+.nav-links {
+    font-size: 16px;
+}
+
+.nav-links a {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* Styles pour le contenu principal */
+main {
+    padding: 20px;
+}
+
+/* Styles pour le formulaire de connexion */
+.login-container, .signup-container {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h1, .signup-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-container label, .signup-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"],
+.login-container button,
+.signup-container input[type="text"],
+.signup-container input[type="email"],
+.signup-container input[type="password"],
+.signup-container input[type="date"],
+.signup-container button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.login-container button, .signup-container button {
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+}
+
+.login-container button:hover, .signup-container button:hover {
+    background-color: #555;
+}
+
+/* Styles pour le pied de page */
+footer {
+    background-color: mediumturquoise;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Styles pour les liens dans le pied de page */
+footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Styles pour la table de cours */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}

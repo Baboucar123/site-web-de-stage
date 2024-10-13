@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création d’un point d'accès Wi-Fi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #005b96;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section img {
+            max-width: 100%;
+            height: auto;
+        }
+        .section p {
+            margin: 5px 0;
+        }
+        .section pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Création d’un point d'accès Wi-Fi</h1>
+
+    <div class="section">
+        <h2>Introduction</h2>
+        <p>Documentation : Cisco-Mobility-Express-QuickStart-v2.0-FR.pdf</p>
+        <p>Pour créer notre point d'accès Wi-Fi, nous allons utiliser un AIR-AP2802-E-K9 de Cisco. Voici une image du matériel :</p>
+        <p>Vue de dessus :</p>
+        <img src="path/to/top_view_image.jpg" alt="Vue de dessus du matériel">
+        <p>Vue de face :</p>
+        <img src="path/to/front_view_image.jpg" alt="Vue de face du matériel">
+    </div>
+
+    <div class="section">
+        <h2>Description des Ports et Boutons</h2>
+        <h3>MODE (Button)</h3>
+        <p>Le bouton MODE est situé sur l'accès point Cisco AIR-AP2802-E-K9. Il est utilisé pour sélectionner le mode de fonctionnement de l'accès point, tel que le mode autonome ou le mode contrôleur.</p>
+
+        <h3>Port console</h3>
+        <p>Le port console est utilisé pour accéder à l'interface en ligne de commande (CLI) de l'accès point via une connexion série. Il permet la configuration initiale de l'accès point et le dépannage à distance.</p>
+
+        <h3>Port USB</h3>
+        <p>Le port USB peut être utilisé pour plusieurs fonctions, telles que le stockage externe, la configuration automatique via un dongle USB, ou même pour l'alimentation de certains périphériques USB compatibles. L'accès point Cisco AIR-AP2802-E-K9 dispose de deux ports USB pour une plus grande flexibilité.</p>
+
+        <h3>AUX (Port AUX)</h3>
+        <p>Le port AUX est généralement utilisé pour connecter des périphériques externes, tels que des modems ou des consoles d'accès externes. Il offre une connectivité supplémentaire pour des fonctions spécifiques qui pourraient être nécessaires dans certains scénarios d'implémentation.</p>
+
+        <h3>POE (Power over Ethernet)</h3>
+        <p>Le port POE est utilisé pour fournir de l'alimentation à l'accès point via Ethernet, conformément aux normes PoE (Power over Ethernet). Il élimine le besoin d'une source d'alimentation électrique dédiée à l'accès point, simplifiant ainsi le déploiement.</p>
+
+        <h3>Autre port</h3>
+        <p>Pour celui-ci, je ne suis pas certain de son utilisation exacte.</p>
+    </div>
+
+    <div class="section">
+        <h2>Préliminaire : Installation des pilotes pour créer un point d'accès Wi-Fi basique</h2>
+        <p>Ce préliminaire n’est pas nécessaire pour créer un point d'accès Wi-Fi basique, mais il est nécessaire pour pouvoir créer les autres points d'accès depuis un PC Linux.</p>
+        <p>Si vous rencontrez ce problème sur Windows :</p>
+        <img src="path/to/windows_problem_image.jpg" alt="Problème sur Windows">
+        <p>Vous pouvez essayer d’installer les pilotes en utilisant les liens suivants :</p>
+        <ul>
+            <li><a href="https://vu.fr/GCTAA">Lien vers Drivrs cloud </a></li>
+           
+        </ul>
+        <p>Si après cela, rien ne fonctionne et que vous ne voyez pas le COMx (où x est le numéro du port correspondant), essayez de suivre ces étapes sous Linux, comme je l’ai fait :</p>
+        <pre>
+Accédez au terminal : Ouvrez une fenêtre de terminal sur votre distribution Linux.
+Liste des ports série : Utilisez la commande suivante pour lister les ports série disponibles: 
+dmesg | grep tty
+        </pre>
+        <p>Vous devriez voir une liste des ports disponibles, comme ttyS0, ttyS1, etc.</p>
+        <p>Connectez votre appareil : Assurez-vous que votre appareil est connecté à l'un des ports série listés.</p>
+        <pre>
+Installation des pilotes : Si des pilotes spécifiques sont nécessaires, utilisez le gestionnaire de paquets de votre distribution pour les installer. Par exemple, sur une distribution basée sur Debian/Ubuntu, vous pouvez utiliser :
+sudo apt-get update
+sudo apt-get install &lt;nom_du_paquet&gt;
+        </pre>
+        <p>Configuration initiale : Accédez à l'interface de ligne de commande (CLI) de votre point d'accès en utilisant un logiciel de terminal, tel que Minicom ou PuTTY, en spécifiant le port série approprié (ex. /dev/ttyS0).</p>
+        <p>Ces étapes devraient nous aider à configurer et dépanner notre point d'accès Wi-Fi sous Linux.</p>
+    </div>
+
+    <div class="section">
+        <h2>I-1. Réinitialisation du point d'accès</h2>
+        <p>Pour réinitialiser un point d'accès Cisco AIR-AP2802-E-K9, suivez les étapes ci-dessous. Référez-vous à l'image de l'accès point Cisco AIR-AP2802-E-K9 vue de face pour identifier les éléments mentionnés.</p>
+        <ol>
+            <li>Identifier le bouton de réinitialisation : Localisez le bouton MODE sur l'accès point. Ce bouton est généralement utilisé pour réinitialiser le dispositif.</li>
+            <li>Mettre le point d'accès sous tension : Assurez-vous que le point d'accès est sous tension et connecté correctement.</li>
+            <li>Appuyer sur le bouton MODE : Appuyez et maintenez enfoncé le bouton MODE.</li>
+            <li>Observer les voyants LED : Continuez à maintenir le bouton MODE enfoncé jusqu'à ce que le voyant LED clignote en orange, puis passe au vert. Cela peut prendre environ 20 à 30 secondes.</li>
+            <li>Relâcher le bouton MODE : Une fois que le voyant LED passe au vert, relâchez le bouton MODE. Le point d'accès va maintenant démarrer et revenir aux paramètres d'usine par défaut.</li>
+            <li>Reconfiguration : Après la réinitialisation, nous devons reconfigurer le point d'accès selon nos besoins spécifiques. Utilisez l'interface de gestion de Cisco pour effectuer cette configuration.</li>
+        </ol>
+        <p>Ces étapes permettent de réinitialiser notre point d'accès Cisco AIR-AP2802-E-K9 et de le préparer pour une nouvelle configuration.</p>
+    </div>
+
+    <div class="section">
+        <h2>I-2. Configuration du point d'accès basique</h2>
+        <h3>Recherche de l'adresse IP de notre AIR-AP2802-E-K9</h3>
+        <ol>
+            <li>Chercher le point d'accès Cisco AIR Provision : Utilisez un autre point d'accès sans fil pour vous connecter à votre réseau. Après la réinitialisation, recherchez un réseau Wi-Fi nommé "Cisco AIR Provision".</li>
+            <li>Connexion au réseau Cisco AIR Provision : Connectez-vous au réseau "Cisco AIR Provision". Le mot de passe par défaut est "password" (tout en minuscule).</li>
+            <li>Trouver l'adresse IP : Une fois connecté au réseau "Cisco AIR Provision", ouvrez un navigateur web et essayez d'accéder à l'adresse suivante : <code>192.168.1.1</code></li>
+        </ol>
+        <p>Cela devrait nous amener à la page de connexion de l'interface de gestion de votre point d'accès.</p>
+        
+        <h3>Connexion à l'interface de gestion</h3>
+        <p>Page de connexion : En accédant à l'adresse IP <code>192.168.1.1</code>, vous serez dirigé vers la page de connexion de l'interface de gestion de votre point d'accès Cisco AIR-AP2802-E-K9.</p>
+        <p>Configuration initiale : Sur la page de connexion, utilisez les identifiants par défaut (généralement "admin" pour le nom d'utilisateur et "password" pour le mot de passe, sauf si ceux-ci ont été modifiés). Vous pourrez ensuite procéder à la configuration initiale de votre point d'accès.</p>
+        <p>En suivant ces étapes, vous pourrez trouver l'adresse IP de votre point d'accès Cisco AIR-AP2802-E-K9, vous connecter à son interface de gestion, et configurer le dispositif selon vos besoins spécifiques.</p>
+        
+        <h3>Création d'un utilisateur et configuration du réseau</h3>
+        <ol>
+            <li>Créer un utilisateur : Saisissez le nom d'utilisateur et le mot de passe choisis dans les champs appropriés.</li>
+            <li>Confirmer les informations : Confirmez le mot de passe en le saisissant à nouveau dans le champ de confirmation.</li>
+            <li>Accéder à la page de configuration : Après avoir créé votre utilisateur, vous serez redirigé vers la page de configuration du réseau.</li>
+        </ol>
+        <p>Ici, il vous faudra créer un utilisateur et un mot de passe. Pour mon cas, j’ai choisi "admin" comme nom d'utilisateur et "Password123" comme mot de passe, avec une majuscule pour le "P".</p>
+        <p>Sur cette page, vous pourrez configurer les paramètres de votre réseau, tels que le SSID (nom du réseau Wi-Fi), la sécurité (mot de passe Wi-Fi), et d'autres options avancées selon nos besoins.</p>
+        
+        <h3>Définir le type de connexion SSID pour notre réseau</h3>
+        <p>Le mot de passe est <code>Password123</code> et le SSID est <code>My-Employee-SSID</code>, puis valider. Activez-le et veuillez choisir le <em>data and voice</em>.</p>
+        
+        <h3>Résumé de la configuration du SSID</h3>
+        <ul>
+            <li>Nom du réseau (SSID) : Nom du réseau</li>
+            <li>Type de connexion : Type de connexion choisi - Ouvert / WPA2-Personnel / WPA3-Personnel / WPA2-Entreprise / WPA3-Entreprise</li>
+            <li>Paramètres de sécurité : Mot de passe configuré / Aucun mot de passe pour le réseau ouvert</li>
+            <li>Complexité du mot de passe : Suffisamment complexe / Besoin d'amélioration</li>
+            <li>Sauvegarde des modifications : Modifications enregistrées et appliquées avec succès / Besoin de redémarrage du point d'accès</li>
+        </ul>
+        <p>Ce résumé devrait nous aider à vérifier rapidement la configuration de votre SSID et à identifier toute action supplémentaire nécessaire pour assurer la sécurité et la connectivité de votre réseau Wi-Fi.</p>
+    </div>
+
+    <div class="section">
+        <h2>Confirmation et redémarrage</h2>
+        <p>Lorsque vous appuyez sur "Apply" pour appliquer la configuration, vous verrez probablement une confirmation ou une notification indiquant que les modifications ont été enregistrées avec succès. Ensuite, selon la configuration spécifique de votre point d'accès Cisco AIR-AP2802-E-K9, vous pourriez également être invité à redémarrer le point d'accès pour que les nouvelles configurations prennent effet.</p>
+        <p>Assurez-vous de suivre attentivement les instructions et les notifications affichées à l'écran pour finaliser le processus de configuration. Si vous rencontrez des problèmes ou si vous avez des questions, n'hésitez pas à consulter le manuel d'utilisation du point d'accès ou à contacter le support technique de Cisco pour obtenir de l'aide supplémentaire.</p>
+        <p>Une fois que le point d'accès Cisco AIR-AP2802-E-K9 a été redémarré pour appliquer les nouvelles configurations, vous devriez pouvoir voir le réseau Wi-Fi que vous venez de créer apparaître dans la liste des réseaux disponibles sur vos appareils. Voici ce que vous pourriez observer :</p>
+        <ul>
+            <li>Nom du réseau (SSID) : Nom du réseau que vous avez configuré</li>
+            <li>Type de connexion : Ouvert / WPA2-Personnel / WPA3-Personnel / WPA2-Entreprise / WPA3-Entreprise</li>
+            <li>Signal Wi-Fi : Force du signal indiquant la qualité de la connexion sans fil</li>
+            <li>Sécurité : Indication si le réseau est sécurisé ou non</li>
+        </ul>
+        <p>Assurez-vous que le nom du réseau (SSID) correspond à celui que vous avez configuré et que le type de connexion et les paramètres de sécurité sont conformes à vos attentes. Une fois que vous voyez votre réseau dans la liste des réseaux disponibles, vous pouvez vous connecter en saisissant le mot de passe si nécessaire (pour les réseaux sécurisés) et en cliquant sur "Se connecter" ou équivalent sur vos appareils.</p>
+    </div>
+
+    <div class="section">
+        <h2>I-3. Configuration des trois points d'accès supplémentaires</h2>
+        <p>Pour commencer, il faut que nous soyons dans le même réseau que notre appareil de point d’accès, et maintenant nous allons ouvrir notre navigateur web et saisir ceci :</p>
+        <p><code>https://192.168.100.254</code></p>
+        <p>Il faut retenir que <code>192.168.100.254</code> est notre adresse IP de management durant notre configuration de notre point basique. Pour mon cas c’est ceci :</p>
+        <p>Si vous n’avez pas utilisé les mêmes adresses, il faudra alors choisir la bonne sinon ça ne marchera pas. ET c’est bien fait, vous serez redirigé vers cette page :</p>
+        <p>Il faudra choisir s’identifier en appuyant sur le login et nous devons avoir maintenant cette page maintenant :</p>
+        <p>Insérez le nom d’utilisateur et le mot de passe que nous avions utilisé lors de la configuration de notre point d’accès basique. Pour moi, le nom d’utilisateur est <code>admin</code> et le mot de passe est <code>Password123</code>. Et nous devrons voir cette page normalement :</p>
+        <p>Page d'accueil :</p>
+        <ol>
+            <li>Le volet latéral de l'interface Web. Il s'agit du volet de navigation principal à l'aide duquel vous pouvez accéder aux différentes sous-sections de l'interface Web.</li>
+            <li>Le titre de l'interface Web. Il indique le modèle AP du point d'accès principal (sur lequel la fonctionnalité de contrôleur intégré fonctionne actuellement)</li>
+            <li>Recherchez un point d'accès ou un client en utilisant son adresse MAC.</li>
+            <li>Cliquez pour enregistrer la configuration actuelle du contrôleur dans la NVRAM. Pour plus d'informations, voir Enregistrement de la configuration du contrôleur.</li>
+            <li>Cliquez pour afficher les informations actuelles du système ou pour vous déconnecter de l'interface Web du contrôleur.</li>
+            <li>La section Surveillance du réseau Mobility Express. Pour plus d'informations, consultez À propos du service de surveillance Cisco Mobility Express.</li>
+            <li>La section Paramètres sans fil, où vous pouvez administrer les points d'accès associés, gérer les WLAN, les comptes d'utilisateurs WLAN et les comptes d'utilisateurs invités.</li>
+            <li>La section Gestion, où vous pouvez définir les paramètres d'accès à la gestion, gérer les comptes d'administrateur, l'heure du réseau et effectuer des mises à jour logicielles.</li>
+            <li>La section Avancé, où vous pouvez définir les paramètres SNMP, les paramètres du journal système et effectuer une réinitialisation aux paramètres d'usine par défaut.</li>
+        </ol>
+        <p>Et là, nous avons l’interface de notre point d’accès. Et nous pouvons explorer tous les onglets. Dans l’onglet <em>Network summary</em> nous avons ceci :</p>
+        <p>Et nous pouvons voir le nombre de clients connectés à ce SSID :</p>
+        <p>Dans l’onglet <em>WLAN</em> nous devons avoir ceci :</p>
+        <p>Et nous pouvons voir toutes les informations nécessaires. Maintenant nous allons configurer nos trois points d'accès :</p>
+        <p>Pour commencer, il faut se rendre dans <em>WIRELESS SETTINGS</em> &gt;&gt; <em>WLANS</em> et nous avons ceci :</p>
+        <p>Et nous pouvons y ajouter des SSIDs. Pour cela, il faudra appuyer sur <em>Add New WLAN/RLAN</em>.</p>
+        <p>Mais cette méthode n’est pas suffisante. Par exemple, si quelqu'un se connecte au point d'accès et que quelqu’un d’autre se connecte en filaire au niveau du switch, nous ne pouvons pas communiquer car le routage ne passe pas.</p>
+        <p>Mais sur le switch, nous pouvons connecter notre point d'accès, et au lieu de le configurer de façon qu’il donne des adresses IP dynamiques, nous allons le laisser comme ça et c’est notre routeur qui va s'en occuper.</p>
+        <p>Et par la suite dans la config ci-haut au niveau du DHCP IP, faire ceci :</p>
+        <p>Photo de la modification à faire et l’autre partie est la suivante deuxième partie.</p>
+        <p>Il faut s’assurer de mettre la bonne IP et la bonne passerelle du VLAN ou du réseau dans laquelle le point d'accès est branché.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuration du Switch Cisco Business 220 Series</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        main {
+            padding: 20px;
+        }
+        
+        h2 {
+            color: #333;
+        }
+        
+        section {
+            margin-bottom: 20px;
+        }
+        
+        pre {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Configuration du Switch Cisco Business 220 Series</h1>
+    </header>
+    <main>
+        <section id="connexion">
+            <h2>Connexion au switch</h2>
+            <p>Pour pouvoir se connecter et configurer un switch ou commutateur, suivez ces étapes :</p>
+            <ol>
+                <li>D'abord, rendez-vous sur le terminal Linux et suivez le tuto pour régler le problème de connexion au port afin de faciliter la configuration de notre switch.</li>
+                <li>Ensuite, il faut effectuer un reset sur le switch en appuyant sur un petit bouton pendant 10 secondes. Le bouton pour le reset peut varier en fonction du modèle de notre switch.</li>
+                <li>Installez minicom avec la commande <code>sudo apt-get install minicom</code>.</li>
+                <li>Changez les paramètres de minicom en tapant la commande <code>sudo minicom -s</code> et suivez ces étapes :
+                    <ul>
+                        <li>Dans le panneau de configuration, choisissez "Configuration du port série" et appuyez sur "Entrer".</li>
+                        <li>Vérifiez que le port série correspond à ttyUSB0.</li>
+                        <li>Appuyez sur "E" et sélectionnez la vitesse en bauds (115200 dans notre cas).</li>
+                        <li>Désactivez le contrôle du flux matériel.</li>
+                        <li>Enregistrez et quittez le panneau de configuration.</li>
+                    </ul>
+                </li>
+                <li>Lancez minicom avec <code>sudo minicom</code>.</li>
+                <li>Connectez-vous avec le username "cisco" et l'old password "cisco".</li>
+                <li>Saisissez un nouveau nom d'utilisateur et mot de passe, puis enregistrez.</li>
+            </ol>
+            <p>Après ces étapes, vous pouvez commencer à configurer le switch.</p>
+        </section>
+
+        <section id="commandes">
+            <h2>Commandes de Configuration du Switch</h2>
+
+            <h3>Commandes de Base en Mode Configuration Globale</h3>
+            <pre><code>
+enable
+configure terminal
+
+hostname [nom_du_switch]
+enable password [mot_de_passe]
+
+line console 0
+password [mot_de_passe]
+login
+exit
+
+line vty 0 4
+password [mot_de_passe]
+login
+exit
+
+ip domain-name [domaine]
+crypto key generate rsa
+ip ssh version 2
+line vty 0 4
+transport input ssh
+exit
+
+interface FastEthernet 0/1
+description [description]
+ip address [adresse_ip] [masque_de_sous_réseau]
+no shutdown
+exit
+
+interface vlan 1
+ip address [adresse_ip] [masque_de_sous_réseau]
+no shutdown
+exit
+
+interface FastEthernet 0/1
+switchport mode access
+switchport access vlan [numéro_vlan]
+exit
+
+interface FastEthernet 0/1
+switchport mode trunk
+switchport trunk allowed vlan [vlans]
+exit
+            </code></pre>
+
+            <h3>Commandes pour la Sécurité</h3>
+            <pre><code>
+interface FastEthernet 0/1
+switchport port-security
+switchport port-security maximum [nombre_max]
+switchport port-security mac-address [adresse_mac]
+switchport port-security violation [shutdown/restrict/protect]
+exit
+            </code></pre>
+
+            <h3>Commandes pour le Management et le Monitoring</h3>
+            <pre><code>
+snmp-server community [communauté] [droits]
+
+show ip interface brief
+show interfaces trunk
+show vlan brief
+show port-security
+
+write memory
+show running-config
+            </code></pre>
+
+            <h3>Commandes de Gestion des VLANs</h3>
+            <pre><code>
+vlan [numéro_vlan]
+name [nom_vlan]
+exit
+
+interface FastEthernet 0/1
+switchport access vlan [numéro_vlan]
+exit
+            </code></pre>
+
+            <h3>Commandes pour le Spanning Tree Protocol (STP)</h3>
+            <pre><code>
+spanning-tree vlan [numéro_vlan]
+spanning-tree vlan [numéro_vlan] priority [valeur]
+            </code></pre>
+
+            <h3>Commandes pour la Qualité de Service (QoS)</h3>
+            <pre><code>
+mls qos
+interface FastEthernet 0/1
+mls qos trust [cos/dscp]
+exit
+            </code></pre>
+        </section>
+
+        <section id="routeur">
+            <h2>Configurer une Interface sur le Routeur</h2>
+            <pre><code>
+Router> enable
+Router# configure terminal
+Router(config)# interface FastEthernet0/1
+Router(config-if)# no shutdown
+Router(config-if)# exit
+Router(config)# end
+Router# write memory
+            </code></pre>
+
+            <h2>Configurer un VLAN et une Adresse IP sur le Routeur</h2>
+            <pre><code>
+Router> enable
+Router# configure terminal
+Router(config)# interface vlan 1
+Router(config-if)# ip address 192.168.1.1 255.255.255.0
+Router(config-if)# no shutdown
+Router(config-if)# exit
+Router(config)# end
+Router# write memory
+            </code></pre>
+
+            <h2>Configurer le Pool DHCP sur le Routeur</h2>
+            <pre><code>
+Router> enable
+Router# configure terminal
+Router(config)# ip dhcp pool SWITCH_POOL
+Router(dhcp-config)# network 192.168.1.0 255.255.255.0
+Router(dhcp-config)# default-router 192.168.1.1
+Router(dhcp-config)# dns-server 8.8.8.8
+Router(dhcp-config)# exit
+Router(config)# ip dhcp excluded-address 192.168.1.1 192.168.1.10
+Router(config)# end
+Router# write memory
+            </code></pre>
+
+            <h2>Étapes pour attribuer une adresse IP à un switch Cisco</h2>
+            <pre><code>
+Switch> enable
+Switch# configure terminal
+Switch(config)# interface vlan 1
+Switch(config-if)# ip address 192.168.1.2 255.255.255.0
+Switch(config-if)# no shutdown
+Switch(config)# ip default-gateway 192.168.1.1
+Switch(config)# end
+Switch# write memory
+            </code></pre>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Configuration du Switch</p>
+    </footer>
+</body>
+</html>

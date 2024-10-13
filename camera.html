@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration de la Caméra D-LINK DCS-932L B</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        p, ol, li {
+            margin-bottom: 15px;
+        }
+        .screenshot {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .command {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .ip-input {
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #337ab7;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #286090;
+        }
+    </style>
+    <script>
+        function openCameraStream() {
+            const ip = document.getElementById("camera-ip").value;
+            if (ip) {
+                const url = `http://${ip}/VIDEO.CGI`;
+                window.open(url, '_blank');
+            } else {
+                alert("Veuillez entrer l'adresse IP de la caméra.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Configuration de la Caméra D-LINK DCS-932L B</h1>
+
+        <h2>Étapes Préliminaires</h2>
+        <p>
+            Pour configurer cette caméra, commencez par l'alimenter et la câbler comme suit :
+        </p>
+        <ol>
+            <li>Connectez-la à une prise secteur.</li>
+            <li>Reliez-la au routeur via un switch pour obtenir une adresse IP dynamique lors de sa connexion.</li>
+        </ol>
+        <p>
+            En l'absence de ce type de routeur sur notre réseau, nous avons utilisé un switch car notre routeur Cisco dispose d'un nombre limité de ports. Une fois branchée au réseau, la caméra obtient une IP dynamique grâce à la configuration DHCP du routeur.
+        </p>
+
+        <h2>Installation de Mydlink</h2>
+        <p>
+            Rendez-vous sur le site de DLINK pour installer Mydlink. Pour télécharger l'assistant de configuration pour Windows, appuyez sur <a href="https://camera-sdk.com/p_6662-how-to-connect-to-a-d-link-camera.html" target="_blank">Télécharger</a>.
+        </p>
+        <p>
+            Une fois le fichier exécutable téléchargé, lancez-le. Vous verrez la page d'accueil suivante :
+        </p>
+        <img src="accueil.jpg" alt="Page d'accueil" class="screenshot">
+
+        <h2>Configuration de la Caméra</h2>
+        <ol>
+            <li>
+                Sur la page d'accueil, cliquez sur <strong>Démarrer</strong> pour poursuivre la configuration.
+            </li>
+            <li>
+                Acceptez la licence et cliquez sur <strong>Suivant</strong>.
+            </li>
+            <li>
+                Assurez-vous que le voyant de la caméra est vert. Si c'est le cas, cliquez sur <strong>Oui</strong>. Sinon, cliquez sur <strong>Non</strong>.
+            </li>
+            <li>
+                Choisissez la caméra disponible sur votre réseau (ici, il n'y en a qu'une seule) et cliquez sur <strong>Suivant</strong>.
+            </li>
+            <li>
+                Renseignez le mot de passe (par défaut, <code>admincam</code>) et cliquez sur <strong>Suivant</strong>.
+            </li>
+            <li>
+                Si le mot de passe est correct, vous verrez cette page. Cliquez sur <strong>Suivant</strong>.
+            </li>
+            <li>
+                Confirmez que le voyant est toujours allumé en cliquant sur <strong>Oui</strong>.
+            </li>
+        </ol>
+        <p>
+            Si tout est bien configuré, vous verrez une vidéo de la caméra en temps réel.
+        </p>
+
+        <h2>Accès au Flux Vidéo</h2>
+        <p>
+            Pour voir le flux vidéo de la caméra, connectez-vous au même réseau que la caméra et accédez à l'adresse IP de la caméra via un navigateur web. Entrez l'adresse IP de la caméra ci-dessous :
+        </p>
+        <input type="text" id="camera-ip" class="ip-input" placeholder="Entrez l'adresse IP de la caméra">
+        <button class="button" onclick="openCameraStream()">Voir le flux vidéo</button>
+        <p>
+            Pour plus d'informations, consultez le site suivant : <a href="https://camera-sdk.com/p_6662-how-to-connect-to-a-d-link-camera.html" target="_blank">https://camera-sdk.com/p_6662-how-to-connect-to-a-d-link-camera.html</a>.
+        </p>
+    </div>
+</body>
+</html>

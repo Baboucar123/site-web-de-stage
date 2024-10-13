@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration et Installation d'un Serveur de Téléphonie Asterisk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+            color: #333;
+        }
+
+        ol, ul {
+            margin: 10px 0 10px 20px;
+            padding: 0;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: auto;
+        }
+
+        code {
+            color: #c7254e;
+            background: #f9f2f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #333;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        a {
+            color: #333;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .ip-config {
+            background: #f4f4f4;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ip-config input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .ip-config button {
+            padding: 10px 20px;
+            border: none;
+            background: #333;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .ip-config button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Configuration et Installation d'un Serveur de Téléphonie (Asterisk) et Connexion d’un Téléphone VoIP (Yealink)</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Configuration du Serveur Asterisk</h2>
+            <h3>A. Configurer la Carte SD de notre Raspberry Pi 4</h3>
+            <ol>
+                <li>Insérer la carte SD dans l'ordinateur et la formater.</li>
+                <li>Lancer Raspberry Pi Imager et choisir le modèle Raspberry Pi 4.</li>
+                <li>Sélectionner le système Raspberry Pi OS (64 bits).</li>
+                <li>Choisir le stockage de la carte SD.</li>
+                <li>Configurer les options générales, les services, et les autres options nécessaires.</li>
+                <li>Enregistrer et commencer l'écriture sur la carte.</li>
+                <li>Éjecter la carte SD de l'ordinateur.</li>
+                <li>Brancher la Raspberry Pi 4 et insérer la carte SD.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h3>B. Connexion à la Raspberry Pi 4 pour Configurer le Serveur Asterisk</h3>
+            <ol>
+                <li>Utiliser la commande SSH pour se connecter: <code>ssh nom_utilisateur@nom_Rasp.local</code></li>
+                <li>Mettre à jour le système:</li>
+                <li>Installer les dépendances:</li>
+                <pre><code>sudo apt install build-essential wget libssl-dev libncurses5-dev libnewt-dev libxml2-dev linux-headers-$(uname -r) libsqlite3-dev uuid-dev</code></pre>
+                <pre><code>sudo apt install libedit-dev sqlite3 libsqlite3-dev libjansson-dev libxml2-dev uuid-dev</code></pre>
+                <li>Créer et naviguer vers le répertoire:</li>
+                <pre><code>sudo mkdir /usr/src/asterisk</code></pre>
+                <pre><code>cd /usr/src/asterisk</code></pre>
+                <li>Télécharger et dézipper Asterisk:</li>
+                <pre><code>sudo wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-18-current.tar.gz</code></pre>
+                <pre><code>sudo tar -xvzf asterisk-18-current.tar.gz</code></pre>
+                <pre><code>cd asterisk-18.6.0</code></pre>
+                <li>Configurer et installer Asterisk:</li>
+                <pre><code>sudo ./configure --with-jansson-bundled</code></pre>
+                <pre><code>sudo make menuselect</code></pre>
+                <pre><code>sudo make</code></pre>
+                <pre><code>sudo make install</code></pre>
+                <pre><code>sudo make samples</code></pre>
+                <pre><code>sudo make config</code></pre>
+                <pre><code>/etc/init.d/asterisk start</code></pre>
+            </ol>
+        </section>
+
+        <section>
+            <h3>C. Configuration du Serveur Asterisk pour Passer des Appels</h3>
+            <p>Suivre cette vidéo de configuration: <a href="https://vu.fr/cyLxJ" target="_blank">Configuration Asterisk</a></p>
+            <ol>
+                <li>Se rendre dans le répertoire Asterisk:</li>
+                <pre><code>cd /etc/asterisk</code></pre>
+                <li>Renommer les fichiers de configuration existants:</li>
+                <pre><code>sudo mv sip.conf sip.conf.origine</code></pre>
+                <pre><code>sudo mv extensions.conf extensions.conf.origine</code></pre>
+                <li>Éditer les fichiers de configuration:</li>
+                <pre><code>nano sip.conf</code></pre>
+                <pre><code>nano extensions.conf</code></pre>
+                <li>Exemple de configuration pour <code>sip.conf</code>:</li>
+                <pre><code>[general]
+language=fr
+allow=alaw
+allow=ulaw
+context=labo
+
+[phone1]
+type=friend
+secret=bonjour
+host=dynamic
+callerid = "jean" &lt;300&gt;
+
+[phone2]
+type=friend
+secret=bonjour
+host=dynamic
+callerid = "phone2" &lt;301&gt;
+</code></pre>
+                <li>Exemple de configuration pour <code>extensions.conf</code>:</li>
+                <pre><code>[general]
+
+[labo]
+exten =&gt; 300,1,Answer
+exten =&gt; 300,2,Dial(SIP/phone1)
+enten =&gt; 300,3,Hangup
+
+exten =&gt; 301,1,Answer
+exten =&gt; 301,2,Dial(SIP/phone2)
+enten =&gt; 301,3,Hangup
+</code></pre>
+                <li>Enregistrer les modifications et redémarrer Asterisk:</li>
+                <pre><code>service asterisk restart</code></pre>
+                <li>Se connecter à Asterisk et recharger la configuration:</li>
+                <pre><code>sudo asterisk -r</code></pre>
+                <pre><code>reload</code></pre>
+            </ol>
+        </section>
+
+        <section>
+            <h3>D. Configuration des Téléphones IP Yealink pour la Communication</h3>
+            <p>Configurer les téléphones Yealink en suivant ces vidéos:</p>
+            <ul>
+                <li><a href="https://youtu.be/h0LUg8kpO9g" target="_blank">Vidéo de Configuration</a></li>
+                <li><a href="https://youtu.be/jA5iYpEBqAA" target="_blank">Vidéo de Démonstration</a></li>
+                <li><a href="https://youtu.be/jMQfSsO1da4" target="_blank">Autre Vidéo sur Asterisk</a></li>
+            </ul>
+            <ol>
+                <li>Alimenter les téléphones IP par PoE via un switch compatible.</li>
+                <li>Configurer le service DHCP sur le routeur pour allouer des adresses IP dynamiques:</li>
+                <pre><code>ip dhcp pool POOL1
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.254
+dns-server 8.8.8.8
+lease 7
+exit</code></pre>
+                <li>Connecter les téléphones au réseau et accéder à leur interface web pour finaliser la configuration.</li>
+            </ol>
+        </section>
+
+        <section class="ip-config">
+            <h3>Accéder à l'Interface Graphique du Téléphone IP</h3>
+            <p>Entrez l'adresse IP du téléphone IP Yealink pour accéder à son interface de configuration:</p>
+            <form action="" onsubmit="event.preventDefault(); openIP();">
+                <input type="text" id="ipAddress" placeholder="Adresse IP du téléphone IP">
+                <button type="submit">Accéder</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Configuration Asterisk et Yealink VoIP</p>
+    </footer>
+
+    <script>
+        function openIP() {
+            var ipAddress = document.getElementById('ipAddress').value;
+            if (ipAddress) {
+                window.open('http://' + ipAddress, '_blank');
+            } else {
+                alert('Veuillez entrer une adresse IP.');
+            }
+        }
+    </script>
+</body>
+</html>
